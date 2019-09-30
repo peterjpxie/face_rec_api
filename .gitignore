@@ -1,3 +1,6 @@
+# app specific files
+image_files/*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
