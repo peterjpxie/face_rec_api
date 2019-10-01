@@ -13,6 +13,10 @@ import os
 # import ipdb # import ipdb will disable the debug mode, i.e. reload on save file.
 import pdb
 import json
+import matplotlib.pyplot as plt
+from PIL import Image
+import numpy as np
+
 app = Flask(__name__)
 
 @app.route('/')
@@ -40,19 +44,35 @@ def face_recognition():
         if 'file' not in request.files:
             flash('No file part')
             return redirect(request.url)
-        file = request.files['file'] # 'file' is the name in the input request, could be file1, file2.
+        file = request.files.get('file')
         # if user does not select file, browser also
         # submit an empty part without filename
         if file.filename == '':
             flash('No selected file')
             return redirect(request.url)
-        if file and allowed_file(file.filename):
+            
+        if allowed_file(file.filename):
+            # read file as image directly
+            img = Image.open(file)
+            newfilename = 'new.png'
+            img.save(newfilename)
+            
+            ''' or convert string to numpy array
+            #read image file string data
+            filestr = request.files['file'].read()
+            #convert string data to numpy array
+            npimg = numpy.fromstring(filestr, numpy.uint8)
+            # convert numpy array to image
+            img = cv2.imdecode(npimg, cv2.CV_LOAD_IMAGE_UNCHANGED)
+            '''            
+                        
             # get parameters from url if any
             param_features = request.args.get('features', '')
-            # read file content directly. Note once read, the file becomes empty when try to save later. Cursor issue, IMO.
+            # read file content directly. 
+            # Note once read or open by Image.open, the file becomes empty when try to save later. Cursor issue, IMO.
             # print('file content:\n', file.read()) 
             filename = secure_filename(file.filename) # secure_filename converts to a secure filename.
-            file.save(os.path.join(UPLOAD_FOLDER, filename))
+            # file.save(os.path.join(UPLOAD_FOLDER, filename))
             # return redirect(url_for('uploaded_file', filename=filename))
             # return send_from_directory(UPLOAD_FOLDER, filename)
             if param_features.lower() == 'true':
@@ -60,6 +80,7 @@ def face_recognition():
             resp_data = {'ID':'', 'name': 'unknown',
                         'features': {}
                         }
+
             return json.dumps(resp_data)
             
     return '''
@@ -68,6 +89,69 @@ def face_recognition():
     <h1>Upload a image</h1>
     <form method=post enctype=multipart/form-data>
       <input type=file name=file>
+      <input type=submit value=Upload>
+    </form>
+    '''
+
+@app.route('/face_match', methods=['POST', 'GET'])
+def face_match():
+    if request.method == 'POST':
+        # print(request.get_data().decode('utf-8'))
+        # check if the post request has the file part
+        if ('file1' not in request.files) or ('file2' not in request.files):
+            flash('No file part')
+            return redirect(request.url)
+        
+        file1 = request.files.get('file1')
+        file2 = request.files.get('file2')
+        # if user does not select file, browser also
+        # submit an empty part without filename
+        if file1.filename == '' or file2.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+            
+        if allowed_file(file1.filename) and allowed_file(file2.filename):
+            # read file as image directly
+            img1 = Image.open(file1)
+            img2 = Image.open(file2)
+            new_filename1 = 'new1.png'
+            new_filename2 = 'new2.png'
+            img1.save(new_filename1)
+            img2.save(new_filename2)
+            
+            ''' or convert string to numpy array
+            #read image file string data
+            filestr = request.files['file'].read()
+            #convert string data to numpy array
+            npimg = numpy.fromstring(filestr, numpy.uint8)
+            # convert numpy array to image
+            img = cv2.imdecode(npimg, cv2.CV_LOAD_IMAGE_UNCHANGED)
+            '''            
+                        
+            # get parameters from url if any
+            param_features = request.args.get('features', '')
+            # read file content directly. 
+            # Note once read or open by Image.open, the file becomes empty when try to save later. Cursor issue, IMO.
+            # print('file content:\n', file.read()) 
+            filename1 = secure_filename(file1.filename) # secure_filename converts to a secure filename.
+            # file.save(os.path.join(UPLOAD_FOLDER, filename))
+            # return redirect(url_for('uploaded_file', filename=filename))
+            # return send_from_directory(UPLOAD_FOLDER, filename)
+            if param_features.lower() == 'true':
+                pass # to add logic
+            resp_data = {'ID':'', 'name': 'unknown',
+                        'features': {}
+                        }
+
+            return json.dumps(resp_data)
+            
+    return '''
+    <!doctype html>
+    <title>Face Match</title>
+    <h1>Upload two images</h1>
+    <form method=post enctype=multipart/form-data>
+      <input type=file name=file1>
+      <input type=file name=file2>
       <input type=submit value=Upload>
     </form>
     '''
