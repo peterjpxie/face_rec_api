@@ -14,7 +14,7 @@ import json
 import matplotlib.pyplot as plt
 from PIL import Image
 import numpy as np
-# import face_recognition as fr
+from .face_util import *
 
 app = Flask(__name__)
     

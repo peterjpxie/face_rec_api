@@ -1,6 +1,5 @@
 # app specific files
-# image_files/*
-# *.png # retain algorithm images
+*.png
 *.jpg
 *.jpeg
 
