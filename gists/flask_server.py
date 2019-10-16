@@ -6,10 +6,7 @@ from face_util import compare_faces, face_rec, find_facial_features, find_face_l
 
 app = Flask(__name__)
     
-UPLOAD_FOLDER = 'received_files'
 ALLOWED_EXTENSIONS = ['png', 'jpg', 'jpeg']
-
-# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -30,9 +27,7 @@ def face_match():
             print('No selected file')
             return redirect(request.url)
             
-        if allowed_file(file1.filename) and allowed_file(file2.filename):
-            #file1.save( os.path.join(UPLOAD_FOLDER, secure_filename(file1.filename)) )
-            #file2.save( os.path.join(UPLOAD_FOLDER, secure_filename(file2.filename)) )           
+        if allowed_file(file1.filename) and allowed_file(file2.filename):          
             ret = compare_faces(file1, file2)     
             resp_data = {"match": bool(ret)} # convert numpy._bool of ret to bool for json.dumps
             return json.dumps(resp_data)
@@ -96,12 +91,6 @@ def face_recognition():
 def hello_world():
     return 'Hello, World!'
     
-# Run in HTTP  
 # When debug = True, code is reloaded on the fly while saved
 app.run(host='0.0.0.0', port='5001', debug=True)    
 
-# Run in HTTPS
-# https://werkzeug.palletsprojects.com/en/0.15.x/serving/#quickstart
-# ssl_context_ = ('ssl_keys/key.crt', 'ssl_keys/key.key')
-# app.run(host='127.0.0.1', port='5000', ssl_context=ssl_context_)
-# output: Running on https://127.0.0.1:5001/
