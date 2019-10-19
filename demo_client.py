@@ -18,8 +18,8 @@ def test_face_rec():
     print( 'face_rec response:\n', json.dumps(resp.json()) )
     
 def main():
-    test_face_match()
-    # test_face_rec()
+    # test_face_match()
+    test_face_rec()
     
 if __name__ == '__main__':
     main()
