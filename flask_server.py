@@ -60,7 +60,7 @@ def print_request(request):
     # print body content
     body_bytes=request.get_data()
     # replace image raw data with string '<image raw data>'
-    body_sub_image_data=re.sub(b'(\r\n\r\n)(.*?)(\r\n--)',b'\\1<image raw data>\\3', body_bytes,flags=re.DOTALL)
+    body_sub_image_data=re.sub(b'(\r\n\r\n)(.*?)(\r\n--)',br'\1<image raw data>\3', body_bytes,flags=re.DOTALL)
     print(body_sub_image_data.decode('utf-8'))
 
 @app.route('/face_rec', methods=['POST', 'GET'])

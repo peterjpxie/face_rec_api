@@ -1,0 +1,9 @@
+http://127.0.0.1:5001/face_rec
+content-type: "multipart/form-data; boundary=---------------------------151482349718403643091396029930"
+content-length: 91238
+-----------------------------151482349718403643091396029930
+Content-Disposition: form-data; name="file"; filename="peter2.jpg"
+Content-Type: image/jpeg
+
+<image raw data>
+-----------------------------151482349718403643091396029930--

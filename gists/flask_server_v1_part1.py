@@ -4,7 +4,7 @@ from face_util import compare_faces, face_rec
 
 app = Flask(__name__)
 
-@app.route('/face_match')
+@app.route('/face_match', methods=['POST'])
 def face_match():
     if request.method == 'POST':
         # check if the post request has the file part
