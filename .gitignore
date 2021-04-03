@@ -1,7 +1,5 @@
 # app specific files
-*.png
-*.jpg
-*.jpeg
+peter*.jpg
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

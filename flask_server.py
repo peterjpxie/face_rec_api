@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, flash, redirect, url_for
+# from flask import Flask, request, render_template, flash, redirect, url_for
 from werkzeug.utils import secure_filename
 import os
 import json
@@ -20,6 +20,7 @@ def allowed_file(filename):
 @app.route('/face_match', methods=['POST', 'GET'])
 def face_match():
     if request.method == 'POST':
+        # if request.bo
         # check if the post request has the file part
         if ('file1' not in request.files) or ('file2' not in request.files):
             print('No file part')
@@ -36,7 +37,7 @@ def face_match():
             #file1.save( os.path.join(UPLOAD_FOLDER, secure_filename(file1.filename)) )
             #file2.save( os.path.join(UPLOAD_FOLDER, secure_filename(file2.filename)) )
             ret = compare_faces(file1, file2)
-            resp_data = {"match": bool(ret)} # convert numpy._bool of ret to bool for json.dumps
+            resp_data = {"match": bool(ret)} # convert ret (numpy._bool) to bool for json.dumps
             return json.dumps(resp_data)
 
     # Return a demo page for GET request
