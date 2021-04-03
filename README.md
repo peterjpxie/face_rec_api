@@ -33,6 +33,8 @@ python demo_client.py
 ## Run API client Advanced (draw face features)
 python find_facial_features_in_picture_w_api.py 
 
+![Example](./Medium/face_makeup_m.png)
+
 # Medium Post
 Check out the [medium post](https://towardsdatascience.com/build-face-recognition-as-a-rest-api-4c893a16446e?source=friends_link&sk=5b89a9cbfc997aee59743c504c3bf068) for more details.
 
