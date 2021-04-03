@@ -39,4 +39,4 @@ python find_facial_features_in_picture_w_api.py
 Check out the [medium post](https://towardsdatascience.com/build-face-recognition-as-a-rest-api-4c893a16446e?source=friends_link&sk=5b89a9cbfc997aee59743c504c3bf068) for more details.
 
 # Notes
-Many open source face recognition projects, like [face recognition](https://github.com/ageitgey/face_recognition), are for Linux / POSIX systems only. Building a REST API for them is a much easier solution than trying to convert and deploy them for mobile devices.
+Many open source face recognition projects, like [face recognition](https://github.com/ageitgey/face_recognition), are easy to install in or only for Linux / POSIX systems. Building a REST API for them is a much easier solution than trying to convert and deploy them for mobile devices.
