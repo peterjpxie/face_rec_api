@@ -23,9 +23,7 @@ python flask_server.py
 
 ## Run API client - Web
 Simply open a web browser and enter:
-
 http://127.0.0.1:5001/face_rec
-
 http://127.0.0.1:5001/face_match
 
 and upload image files.
