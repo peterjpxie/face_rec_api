@@ -1,4 +1,4 @@
-# from flask import Flask, request, render_template, flash, redirect, url_for
+from flask import Flask, request, render_template, flash, redirect, url_for
 from werkzeug.utils import secure_filename
 import os
 import json
