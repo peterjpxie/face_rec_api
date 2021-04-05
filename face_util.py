@@ -24,7 +24,7 @@ known_faces = [('Obama','sample_images/obama.jpg'),
     
 def face_rec(file):
     """
-    Return name for a known face, otherwise return 'Uknown'.
+    Return name for a known face, otherwise return 'Unknown'.
     """
     for name, known_file in known_faces:
         if compare_faces(known_file,file):

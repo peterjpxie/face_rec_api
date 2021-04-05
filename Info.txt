@@ -1,0 +1,2 @@
+Post form data length for Peter2.jpg: 91162
+Post base64 data length for Peter2.jpg: 
