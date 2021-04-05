@@ -11,8 +11,6 @@ app = Flask(__name__)
 UPLOAD_FOLDER = 'received_files'
 ALLOWED_EXTENSIONS = ['png', 'jpg', 'jpeg']
 
-# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -24,38 +22,49 @@ def print_request(request):
     print('content-type: "%s"' % request.headers.get('content-type'))
     print('content-length: %s' % request.headers.get('content-length'))
     # print body content
-    body_bytes=request.get_data()
-    # replace image raw data with string '<image raw data>'
-    body_sub_image_data=re.sub(b'(\r\n\r\n)(.*?)(\r\n--)',br'\1<image raw data>\3', body_bytes,flags=re.DOTALL)
-    print(body_sub_image_data.decode('utf-8'))
-    # print(body_bytes[0:500] + b'...' + body_bytes[-500:]) # raw binary
+    if request.is_json:
+        json_data = request.get_json(cache=True)
+        # replace image_data with '<image base64 data>'
+        if json_data.get('image_data', None) is not None:
+            json_data['image_data'] = '<image base64 data>'
+        else: 
+            print('request image_data is None.')
+        print(json.dumps(json_data,indent=4))
+    else: # form data
+        body_data=request.get_data()
+        # replace image raw data with string '<image raw data>'
+        body_sub_image_data=re.sub(b'(\r\n\r\n)(.*?)(\r\n--)',br'\1<image raw data>\3', body_data,flags=re.DOTALL)
+        print(body_sub_image_data.decode('utf-8'))
+    # print(body_data[0:500] + b'...' + body_data[-500:]) # raw binary
 
 @app.route('/face_rec', methods=['POST', 'GET'])
 def face_recognition():
     if request.method == 'POST':
+        # Print request url, headers and content
+        print_request(request)
+
         # JSON data format
         if request.is_json:
             """ Sample data
             {'file_format':'jpg', 'image_data': <base64 ascii string>}
             """
-            print('Request is a JSON format.')
+            # print('Request is a JSON format.')
             json_data = request.get_json(cache=False)
             file_format = json_data.get('file_format', None)
             image_data = json_data.get('image_data', None)
             if file_format not in ALLOWED_EXTENSIONS or image_data is None:
-                print('Invalid JSON, redirect to web form data page.')
-                return redirect(request.url)
+                return '{"error":"Invalid JSON."}'
 
-            with open( os.path.join(UPLOAD_FOLDER, 'image.jpg'),'wb') as f:
+            file = os.path.join(UPLOAD_FOLDER, 'image.' + file_format)
+            with open(file,'wb') as f:
                 # Note: Convert ascii string to binary string first, e.g. 'abc' to b'abc', before decode as base64 string.
-                f.write(base64.standard_b64decode(image_data.encode('ascii')))
-            return '{"name": "Peterasdf"}'
+                f.write(base64.b64decode(image_data.encode('ascii')))             
+            # name = face_rec(file)
+            # resp_data = {'name': name }
+            # return json.dumps(resp_data)
         
         # form data format
         else: 
-            # Print request url, headers and content
-            print_request(request)
-
             # check if the post request has the file part
             if 'file' not in request.files:
                 print('No file part')
@@ -66,25 +75,28 @@ def face_recognition():
                 print('No selected file')
                 return redirect(request.url)
 
-            if allowed_file(file.filename):
-                name = face_rec(file)
-                resp_data = {'name': name }
+            if not allowed_file(file.filename):
+                return '{"error":"Invalid image file format."}'
+        
+        # Process image file
+        name = face_rec(file)
+        resp_data = {'name': name }
 
-                # get parameters from url if any.
-                # facial_features parameter:
-                param_features = request.args.get('facial_features', '')
-                if param_features.lower() == 'true':
-                    facial_features = find_facial_features(file)
-                    # append facial_features to resp_data
-                    resp_data.update({'facial_features': facial_features})
+        # get parameters from url if any.
+        # facial_features parameter:
+        param_features = request.args.get('facial_features', '')
+        if param_features.lower() == 'true':
+            facial_features = find_facial_features(file)
+            # append facial_features to resp_data
+            resp_data.update({'facial_features': facial_features})
 
-                # face_locations parameter:
-                param_locations = request.args.get('face_locations', '')
-                if param_locations.lower() == 'true':
-                    face_locations = find_face_locations(file)
-                    resp_data.update({'face_locations': face_locations})
+        # face_locations parameter:
+        param_locations = request.args.get('face_locations', '')
+        if param_locations.lower() == 'true':
+            face_locations = find_face_locations(file)
+            resp_data.update({'face_locations': face_locations})
 
-                return json.dumps(resp_data)
+        return json.dumps(resp_data)
 
     return '''
     <!doctype html>
