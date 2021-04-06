@@ -1,4 +1,4 @@
 Peter2.jpg file size: 89KB
-Post form data length: 91162
-Post base64 data length: 121396 
+Post form data content length: 91162
+Post base64 data content length: 121396 
 (121396 - 91162) / 91162 = 33%

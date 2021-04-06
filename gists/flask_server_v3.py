@@ -57,7 +57,7 @@ def face_recognition():
 
             file = os.path.join(UPLOAD_FOLDER, 'image.' + file_format)
             with open(file,'wb') as f:
-                # Note: Convert ascii string to binary string first, e.g. 'abc' to b'abc', before decode as base64 string.
+                # Note: Convert ascii string to bytes string first, e.g. 'abc' to b'abc', before decode as base64 string.
                 f.write(base64.b64decode(image_data.encode('ascii'))) 
         
         # form data format
